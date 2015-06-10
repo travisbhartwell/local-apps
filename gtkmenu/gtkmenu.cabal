@@ -13,6 +13,4 @@ executable gtkmenu
   build-depends:       base >=4.8 && <4.9,
                        gtk,
                        glib
-  extra-libraries:     gdk-x11-2.0
-  -- extra-libraries:     gtk
   default-language:    Haskell2010

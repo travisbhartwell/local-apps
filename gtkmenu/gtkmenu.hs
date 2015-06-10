@@ -1,4 +1,3 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
 module Main where
 
 import Control.Concurrent (threadDelay)
@@ -15,24 +14,12 @@ import Graphics.UI.Gtk.Gdk.Events (Event (..))
 import qualified Graphics.UI.Gtk.ModelView as ModelView
 import System.Glib.UTFString
 
-foreign import ccall unsafe "gdk_window_set_override_redirect"
-    gdkSetOverrideRedirect :: Ptr DrawWindow -> Bool -> IO ()
-foreign import ccall unsafe "gdk_window_show"
-    gdkWindowShow :: Ptr DrawWindow -> IO ()
-foreign import ccall unsafe "gdk_keyboard_grab"
-    gdkKeyboardGrab :: Ptr DrawWindow -> Bool -> Int -> IO Int
-foreign import ccall unsafe "gdk_window_move"
-    gdkWindowMove :: Ptr DrawWindow -> Int -> Int -> IO ()
-
 data MenuGUI = MenuGUI { win          :: Window
                        , textField    :: Entry
                        , store        :: ModelView.ListStore String
                        , view         :: TreeView
                        , originalList :: [String]
                        }
-
-unmanagedProgName :: String
-unmanagedProgName = "gtkmenu-unmanaged"
 
 main :: IO ()
 main = do
@@ -44,43 +31,7 @@ main = do
     let window = win gui
     widgetShowAll window
     dw <- widgetGetDrawWindow window
-    prog <- getProgName
-    when (prog == unmanagedProgName) $ do
-        setOverrideRedirect dw
-        showGdkWindow dw
-        _ <- grabKeyboard dw
-        return ()
-    moveWindow dw
     mainGUI
-
-setOverrideRedirect :: DrawWindow -> IO ()
-setOverrideRedirect w =
-    withForeignPtr (unDrawWindow w) $ \ ptr -> gdkSetOverrideRedirect ptr True
-
-showGdkWindow :: DrawWindow -> IO ()
-showGdkWindow w =
-    withForeignPtr (unDrawWindow w) $ \ ptr -> gdkWindowShow ptr
-
-moveWindow :: DrawWindow -> IO ()
-moveWindow w =
-    withForeignPtr (unDrawWindow w) $ \ ptr -> gdkWindowMove ptr 192 60
-
-grab :: DrawWindow -> IO Int
-grab w =
-    withForeignPtr (unDrawWindow w) $ \ ptr -> gdkKeyboardGrab ptr True 0
-
-grabKeyboard :: DrawWindow -> IO Bool
-grabKeyboard w = grabKeyboard' w 1000
-  where
-    grabKeyboard' :: DrawWindow -> Integer -> IO Bool
-    grabKeyboard' _ 0 = return False
-    grabKeyboard' window counter = do
-        result <- grab window
-        if result == 0
-            then return True
-            else do
-                threadDelay 1000
-                grabKeyboard' window (counter - 1)
 
 setupGUI :: [String] -> IO MenuGUI
 setupGUI list = do
