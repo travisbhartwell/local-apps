@@ -1,6 +1,14 @@
+{
+  nixpkgs ? import <nixpkgs> {}
+, compiler ? "ghc7101"
+}:
+
 let
-  pkgs = (import <nixpkgs> {});
-  hs = pkgs.haskellngPackages;
-  gtkmenu = hs.callPackage (import ./.) { };
+  pkgs = nixpkgs.pkgs;
+  ghc  = pkgs.haskell.packages.${compiler};
+  f    = import ./gtkmenu.nix;
+  drv  = ghc.callPackage f {};
 in
-  gtkmenu.env
+  (pkgs.haskell.lib.addBuildTools drv [
+   ghc.cabal-install
+  ]).env
