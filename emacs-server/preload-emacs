@@ -1,0 +1,72 @@
+#!/bin/bash
+# Start Emacs in daemon mode if it isn't already.
+
+set -o pipefail
+set -o nounset
+set -o errexit
+
+# Load "library" of common functionality
+. @emacs-server@/share/emacs-server/common-lib
+
+common_emacs_setup
+
+check_for_emacs () {
+    if [ ! -x "${emacs}" ]; then
+        echo "Emacs executable is not found at ${emacs}." 1>&2
+        exit 1
+    fi
+}
+
+usage () {
+    echo "Usage: preload-emacs <name>" 1>&2
+    exit 1
+}
+
+server_connection_failed () {
+    local host
+    local port
+
+    if ! host=$(get_emacs_server_host); then
+        echo "Could not get host for Emacs server \
+from ${serverfile}"
+        return 1
+    fi
+
+    if ! port=$(get_emacs_server_port); then
+        echo "Could not get port for Emacs server \
+from ${serverfile}"
+        return 1
+    fi
+
+    if ! nc -z "${host}" "${port}"; then
+        echo "Connection to emacs server at ${host} \
+on port ${port} not open"
+        return 1
+    fi
+}
+
+if [ $# -ne 1 ]; then
+    usage
+fi
+
+# Name of emacs server session to start
+name="${1}"
+
+setup_server_file_info
+
+if [ -n "$(server_connection_failed)" ]; then
+    # Clean up stale server file
+    if [ -e "${serverfile}" ]; then
+        rm -f "${serverfile}"
+    fi
+
+    # Launch new daemon
+    systemd-cat -t emacs-server \
+                "${emacs}" --daemon \
+               --eval "(setq server-name \"${name}\")"
+fi
+
+# cleanup environment
+unset name
+
+common_emacs_cleanup

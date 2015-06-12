@@ -1,0 +1,18 @@
+1. Replace /usr/bin/emacs and /usr/bin/emacsclient in common-emacs-server-lib with path
+from store.
+
+2. Move common-emacs-server-lib to $pkg/lib
+
+3. Move connect-emacs, preload-emacs, startemacs to $pkg/libexec
+
+4. Change internal pathnames to match in all of these.
+
+Dependencies:
+- Emacs
+- gawk
+- bash
+- systemd-cat
+
+TODO:
+- use traps to clean up things
+

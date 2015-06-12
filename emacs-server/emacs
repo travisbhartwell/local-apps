@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# The following options should be available:
+# - start a new X frame, possibly with a file
+#   - fall back to a TTY if DISPLAY isn't set
+# - start a new frame in a TTY, possibly with a file
+# - open a file in an existing frame, if one exists
+#   - if one doesn't exist open an X frame if one exists
+# Possibly:
+# - evaluate a lisp expression in the existing Emacs instance
+#
+# Possibly refactor to make this script more faithfully map
+# the Emacs commandline options and emacs-command map
+# to emacsclient.
+set -o pipefail
+set -o nounset
+set -o errexit
+
+# Load "library" of common functionality
+. @emacs-server@/share/emacs-server/common-lib
+
+common_emacs_setup
+
+setup_server_file_info
+
+# Default to starting a new X frame
+connect_argument="-c"
+
+# HACK, should probably parse using getopt or somesuch
+if [ $# -ge 1 ]; then
+    if [ "${1}" == "--existing" ]; then
+        connect_argument="-n"
+        shift
+    elif [ "${1}" == "--terminal" ]; then
+        connect_argument="-t"
+        shift
+    fi
+fi
+
+@emacs-server@/libexec/connect-emacs \
+ "${emacs_server_name}" "${connect_argument}" "$@"
+
+# Cleanup environment
+unset connect_argument
+
+common_emacs_cleanup

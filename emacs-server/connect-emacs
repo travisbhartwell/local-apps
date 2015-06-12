@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Heavily modified from, but based upon
+# http://github.com/firebird/home/tree/master/bin/connect-emacs-screen
+#
+# Usage: connect-emacs <name> <args>...
+#
+# Connects to the Emacs instance called NAME.  Starts up the instance
+# if it is not already running.  The rest of the arguments are passed
+# to emacsclient.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Load "library" of common functionality
+. @emacs-server@/share/emacs-server/common-lib
+
+common_emacs_setup
+
+# Name of emacs server session to start
+name="${1}"
+# The rest are the arguments to pass to emacsclient
+shift
+
+setup_server_file_info
+
+edit_with_alternate_editor () {
+    # For all arguments that are real files, use the
+    # alternate editor, since they likely cannot run
+    # Emacs Lisp code.
+    if [ -x n"${ALTERNATE_EDITOR}" ]; then
+        local f
+
+        # TODO: Should I run the editor for each file or just
+        #       pass all of the arguments along?
+        #       This should most likely replicate emacsclient -a in
+        #       features.
+        for f in "$@"; do
+            # TODO: What if the file doesn't exist?
+            if [ -f "${f}" ]; then
+                "${ALTERNATE_EDITOR}" "${f}"
+            fi
+        done
+    fi
+}
+
+if [ -z "${name}" ]; then
+    echo "Usage: connect-emacs <name> <args>..." 1>&2
+    exit 1
+fi
+
+if [ ! -x "${emacsclient}" ]; then
+    echo "Emacsclient is not available, so editing with \
+ALTERNATE_EDITOR." 1>&2
+    edit_with_alternate_editor "$@"
+else
+    if preload-emacs "${name}"; then
+        echo "Emacs found, editing in server session."  1>&2
+        "${emacsclient}" -f "${serverfile}" "$@" > /dev/null 2>&1
+    else
+        # Error in trying to load with Emacs server, so do this:
+        echo "Problem editing with emacs, trying ALTERNATE_EDITOR." 1>&2
+        edit_with_alternate_editor "$@"
+    fi
+fi
+
+# Clean up environment
+unset emacsclient name args
+
+common_emacs_cleanup

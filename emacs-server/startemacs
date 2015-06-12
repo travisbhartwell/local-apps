@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Load "library" of common functionality
+. @emacs-server@/share/emacs-server/common-lib
+
+common_emacs_setup
+
+if [ $# -ge 1 ]; then
+    name="${1}"
+else
+    name=
+fi
+
+setup_server_file_info
+
+@emacs-server@/libexec/preload-emacs \
+ "${emacs_server_name}"
+
+common_emacs_cleanup

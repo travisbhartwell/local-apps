@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# This is a library of common routines used throughout all of the
+# Emacs wrapper code.
+set -o nounset
+set -o errexit
+set -o pipefail
+
+_COMMON_EMACS_LIB=${_COMMON_EMACS_LIB-}
+
+if [ -n "${_COMMON_EMACS_LIB}" ]; then
+    return
+fi
+
+common_emacs_setup () {
+    # Path to emacs executable.  This is hard-coded because my
+    # wrapper should be first in the path.  But also allow to set it
+    # from an environment variable if multiple Emacs' installed
+    emacs=${EMACS_BIN-@emacs@/bin/emacs-24.5}
+    # Path to emacsclient executable
+    emacsclient=${EMACSCLIENT_BIN-$(which emacsclient)}
+    # Default name to use for emacs server
+    emacs_server_name="emacs-server"
+}
+
+setup_server_file_info () {
+    # TODO: I hate how it just assumes that name is set, fix this
+    name=${name-$emacs_server_name}
+
+    # Where server connection info is stored
+    serverdir="${HOME}/.emacs.d/server"
+    serverfile="${serverdir}/${name}"
+}
+
+get_emacs_server_host () {
+    local host
+
+    if host=$(_get_emacs_server_info 1); then
+        echo "${host}"
+    else
+        return 1
+    fi
+}
+
+get_emacs_server_port () {
+    local port
+
+    if port=$(_get_emacs_server_info 2); then
+        echo "${port}"
+    else
+        return 1
+    fi
+}
+
+_get_emacs_server_info () {
+    local serverfile=${serverfile-}
+
+    if [ -z "${serverfile}" ]; then
+        echo "serverfile is not defined" 1>&2
+        return 1
+    fi
+
+    if [ ! -r "${serverfile}" ]; then
+        echo "Can't read server file at ${serverfile}." 1>&2
+        return 1
+    fi
+
+    if [ -z "${1}" ]; then
+        echo "${FUNCNAME} requires a field number as \
+the first parameter." 1>&2
+        return 1
+    fi
+
+    local field="${1}"
+
+    head -n1 "${serverfile}" | \
+        awk -F':| |\t' "{ print \$${field} }"
+}
+
+common_emacs_cleanup () {
+    unset emacs emacsclient emacs_server_name serverfile serverdir
+}
+
+_COMMON_EMACS_LIB=1
