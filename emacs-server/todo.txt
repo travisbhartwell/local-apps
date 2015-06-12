@@ -1,3 +1,5 @@
 TODO:
 - use traps to clean up things
+- better command line parameter handling
+
 

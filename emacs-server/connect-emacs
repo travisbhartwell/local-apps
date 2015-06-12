@@ -56,8 +56,7 @@ ALTERNATE_EDITOR." 1>&2
     edit_with_alternate_editor "$@"
 else
     if @out@/libexec/emacs-server/preload-emacs "${name}"; then
-        echo "Emacs found, editing in server session."  1>&2
-        "${emacsclient}" -f "${serverfile}" "$@" > /dev/null 2>&1
+        "${emacsclient}" -f "${serverfile}" "$@"
     else
         # Error in trying to load with Emacs server, so do this:
         echo "Problem editing with emacs, trying ALTERNATE_EDITOR." 1>&2
