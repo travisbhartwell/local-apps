@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # This is a library of common routines used throughout all of the
 # Emacs wrapper code.
 set -o nounset
