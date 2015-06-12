@@ -1,4 +1,4 @@
-{ stdenv, emacs }:
+{ stdenv, emacs, gawk, systemd }:
 
 stdenv.mkDerivation rec {
   name = "emacs-server-0.1";
@@ -17,9 +17,7 @@ stdenv.mkDerivation rec {
     cp -v ${./start-emacs} "$out/libexec/emacs-server/start-emacs"
     mkdir -p "$out/bin"
     cp -v ${./emacs} "$out/bin/emacs"
-  '';
 
-  fixupPhase = ''
     substituteAllInPlace "$out/share/emacs-server/common-lib"
     substituteAllInPlace "$out/libexec/emacs-server/connect-emacs"
     substituteAllInPlace "$out/libexec/emacs-server/emacs-command"
