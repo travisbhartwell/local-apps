@@ -14,7 +14,7 @@ set -o nounset
 set -o pipefail
 
 # Load "library" of common functionality
-. @emacs-server@/share/emacs-server/common-lib
+. @out@/share/emacs-server/common-lib
 
 common_emacs_setup
 
@@ -55,7 +55,7 @@ if [ ! -x "${emacsclient}" ]; then
 ALTERNATE_EDITOR." 1>&2
     edit_with_alternate_editor "$@"
 else
-    if preload-emacs "${name}"; then
+    if @out@/libexec/emacs-server/preload-emacs "${name}"; then
         echo "Emacs found, editing in server session."  1>&2
         "${emacsclient}" -f "${serverfile}" "$@" > /dev/null 2>&1
     else

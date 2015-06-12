@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load "library" of common functionality
-. @emacs-server@/share/emacs-server/common-lib
+. @out@/share/emacs-server/common-lib
 
 common_emacs_setup
 
@@ -13,7 +13,7 @@ fi
 
 setup_server_file_info
 
-@emacs-server@/libexec/preload-emacs \
+@out@/libexec/emacs-server/preload-emacs \
  "${emacs_server_name}"
 
 common_emacs_cleanup

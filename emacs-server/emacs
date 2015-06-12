@@ -17,7 +17,7 @@ set -o nounset
 set -o errexit
 
 # Load "library" of common functionality
-. @emacs-server@/share/emacs-server/common-lib
+. @out@/share/emacs-server/common-lib
 
 common_emacs_setup
 
@@ -37,7 +37,7 @@ if [ $# -ge 1 ]; then
     fi
 fi
 
-@emacs-server@/libexec/connect-emacs \
+@out@/libexec/emacs-server/connect-emacs \
  "${emacs_server_name}" "${connect_argument}" "$@"
 
 # Cleanup environment
