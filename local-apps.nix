@@ -4,11 +4,7 @@ let
   pkgs = import <nixpkgs> { inherit system; };
 in
 rec {
-  travis-hartwell-mail = import ./travis-hartwell-mail {
-    inherit (pkgs) stdenv makeDesktopItem chromiumBeta;
-  };
-
-  emacs-server = import ./emacs-server {
-    inherit (pkgs) stdenv emacs;
-  };
+  travis-hartwell-mail = pkgs.callPackage ./travis-hartwell-mail { };
+  emacs-server = pkgs.callPackage ./emacs-server { };
+  gtkmenu = pkgs.haskellPackages.callPackage ./gtkmenu { };
 }
