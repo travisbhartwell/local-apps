@@ -4,15 +4,15 @@
 stdenv.mkDerivation rec {
   name = "travis-hartwell-mail-0.1";
 
-  phases = [ "installPhase" ];
+  phases = [ "installPhase" "fixupPhase" ];
 
-  buildInputs = [ chromiumBeta ];
+  inherit chromiumBeta;
 
   desktopItem = makeDesktopItem {
     name = "TravisHartwellMail";
     desktopName = "Travis Hartwell Mail";
     genericName = "Mail";
-    exec = "${chromiumBeta}/bin/chromium --app=http://mail.google.com/mail/u/0";
+    exec = "${out}/bin/travis-hartwell-mail";
     icon = "TravisHartwellMail";
     comment = "GMail in its own app window";
     categories = "Application;Network;Email";
@@ -27,6 +27,10 @@ stdenv.mkDerivation rec {
 
     mkdir -p "$out/share/icons/hicolor/128x128/apps/"
     cp -v ${./TravisHartwellMail.png} "$out/share/icons/hicolor/128x128/apps/TravisHartwellMail.png"
+
+    mkdir -p "$out/bin"
+    cp -v ${./travis-hartwell-mail} "$out/bin/travis-hartwell-mail"
+    substituteAllInPlace "$out/bin/travis-hartwell-mail"
   '';
 
   meta = {

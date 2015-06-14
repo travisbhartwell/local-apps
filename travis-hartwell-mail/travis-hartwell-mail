@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec @chromiumBeta@ ${chromiumBeta}/bin/chromium --app=http://mail.google.com/mail/u/0
