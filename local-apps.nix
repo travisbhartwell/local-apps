@@ -6,5 +6,5 @@ in
 rec {
   travis-hartwell-mail = pkgs.callPackage ./travis-hartwell-mail { };
   emacs-server = pkgs.callPackage ./emacs-server { };
-  gtkmenu = pkgs.haskellPackages.callPackage ./gtkmenu { };
+  gtkmenu = pkgs.haskellPackages.callPackage ./gtkmenu { inherit (pkgs) dmenu; };
 }
