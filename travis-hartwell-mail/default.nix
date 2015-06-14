@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
     name = "TravisHartwellMail";
     desktopName = "Travis Hartwell Mail";
     genericName = "Mail";
-    exec = "${out}/bin/travis-hartwell-mail";
+    exec = "$out/bin/travis-hartwell-mail";
     icon = "TravisHartwellMail";
     comment = "GMail in its own app window";
     categories = "Application;Network;Email";
