@@ -1,15 +1,11 @@
 module Main where
 
-import Control.Concurrent (threadDelay)
 import Control.Monad
 import Data.Char
 import Data.List
-import Foreign
 import System.Exit
-import System.Environment
 
 import Graphics.UI.Gtk
-import Graphics.UI.GtkInternals
 import Graphics.UI.Gtk.Gdk.Events (Event (..))
 import qualified Graphics.UI.Gtk.ModelView as ModelView
 import System.Glib.UTFString
@@ -30,7 +26,6 @@ main = do
     gui <- setupGUI listLines
     let window = win gui
     widgetShowAll window
-    dw <- widgetGetDrawWindow window
     mainGUI
 
 setupGUI :: [String] -> IO MenuGUI
