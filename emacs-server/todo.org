@@ -1,0 +1,25 @@
+* TODO use traps to clean up things
+* TODO better command line parameter handling
+
+* Features
+** Locate default location of emacs and emacsclient binaries
+** Allow user to specify custom locations of those via environment
+** Based on emacs server name, find and parse server file
+*** Hostname
+*** Port
+*** What is the other information in that file and is it important?
+** How much do I want to emulate / pass on the parameters of emacs and emacsclient?
+** Interact with a systemd daemon like [[https://nixos.org/wiki/Emacs_configuration#Emacs_Systemd_Daemon]]
+** Start the daemon if not already started
+
+
+* Ideas
+
+Perhaps I could get around the problem of the UI stuff by just launching emacs
+normally if the server isn't running, using -nw if a text-mode Emacs was
+requested.  If it is running, connect to it with Emacs client.  This doesn't run
+it as an Emacs Daemon, but achieves the same thing, as long as Emacs starts the
+server when it starts.
+
+The emacs server file contains the following content:
+'host:port pid'
