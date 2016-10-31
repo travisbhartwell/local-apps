@@ -1,6 +1,6 @@
 {
   nixpkgs ? import <nixpkgs> {}
-, compiler ? "ghc7103"
+, compiler ? "ghc801"
 }:
 
 let
