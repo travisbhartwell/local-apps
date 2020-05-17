@@ -15,7 +15,7 @@ common_emacs_setup () {
     # Path to emacs executable.  This is hard-coded because my
     # wrapper should be first in the path.  But also allow to set it
     # from an environment variable if multiple Emacs' installed
-    emacs=${EMACS_BIN-@emacs@/bin/emacs-26.1}
+    emacs=${EMACS_BIN-@emacs@/bin/emacs-26.3}
     # Path to emacsclient executable
     emacsclient=${EMACSCLIENT_BIN-$(which emacsclient)}
     # Default name to use for emacs server

@@ -1,11 +1,11 @@
-{ stdenv, emacs, gawk, systemd }:
+{ stdenv, emacs, gawk, netcat, systemd }:
 
 stdenv.mkDerivation rec {
   name = "emacs-server-0.1";
 
   phases = [  "installPhase" "fixupPhase" ];
 
-  inherit emacs gawk systemd;
+  inherit emacs gawk netcat systemd;
 
   installPhase = ''
     mkdir -p "$out/share/emacs-server"

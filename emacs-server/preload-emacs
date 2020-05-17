@@ -38,7 +38,7 @@ from ${serverfile}"
         return 1
     fi
 
-    if ! nc -z "${host}" "${port}"; then
+    if ! @netcat@/bin/nc -z "${host}" "${port}"; then
         echo "Connection to emacs server at ${host} \
 on port ${port} not open"
         return 1
